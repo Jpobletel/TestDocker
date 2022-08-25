@@ -1,0 +1,42 @@
+version: '3.1'
+
+services:
+
+  postgres:
+    image: "postgres:latest"
+    restart: always
+    environment:
+      POSTGRES_PASSWORD=postgres_password
+
+  nginx:
+    depends_on:
+      - api
+      - client
+    restart: always
+    build: 
+      dockerfile: Dockerfile
+      context: ./nginx
+    ports:
+      - 3050:80
+
+  api:
+    build: 
+      dockerfile: Dockerfile
+      context: "./backend"
+    volumes:
+      - /app/node_modules
+      - ./backend:/app
+    environment:
+      - pgUser=postgres
+      - pgHost=postgres
+      - pgDatabase=postgres
+      - pgPassword=postgres_password
+      - pgPort=5432
+  client:
+    stdin_open: true
+    build: 
+      dockerfile: Dockerfile
+      context: ./front
+    volumes:
+      - /app/node_modules
+      - ./front./app

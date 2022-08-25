@@ -1,5 +1,5 @@
 # We use alpine for a lightweight (less memory) image
-FROM node:16
+FROM node
 
 # Create app directory
 WORKDIR /app
@@ -12,14 +12,10 @@ RUN ls -a
 
 # Install the dependencies
 RUN npm install
-RUN npm install -g
-RUN npm init -y
 
 # Copy all the files into the container to run the app
 COPY . .
 
+EXPOSE 3000:3000
 # Run command to start the process runing a shell command using node
 CMD ["npm", "start"]
-
-# This is for documentation only, the port muyst be exposed manually or in compose definition.
-EXPOSE 3000

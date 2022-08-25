@@ -1,3 +1,5 @@
+const keys = require("./keys");
+
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
@@ -42,6 +44,22 @@ client.on('message', (topic, payload) => {
     });
   console.log('Received Message:', topic, payload.toString())
   })
+
+// Postgres client
+const { Pool } = require("pg");
+const pgClient = new Pool({
+  user: keys.pgUser,
+  host: keys.pgHost,
+  database: keys.database,
+  password: keys.password,
+  port: keys.port
+});
+
+pgClient.on("connect", client => {
+  client
+    .query("CREATE TABLE IF NOT EXISTS values (number INT)")
+    .catch(err => console.log(err));
+});
 
 app.use(logger('dev'));
 app.use(express.json());
